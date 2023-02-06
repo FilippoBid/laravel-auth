@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Admin\Project;
 use Illuminate\Support\Facades\Route;
@@ -9,24 +10,25 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
+/* Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+ */
 
-// Rotta per utenti NON loggati dove mostrare la lista dei post in modo carino e coccoloso.
-Route::get("/posts", [PublicPostController::class, "index"])->name("posts.index");
-Route::get("/about", [PublicController::class, "about"])->name("about.index");
-Route::get("/contact", [PublicController::class, "contact"])->name("contact.index");
+Route::get("/posts", [ProjectControllerer::class, "index"])->name("posts.index");
+Route::get("/about", [ProjectController::class, "about"])->name("about.index");
+Route::get("/contact", [ProjectController::class, "contact"])->name("contact.index");
+
+
+Route::resource('projects', ProjectController::class);
+
+
 
 
 Route::get('/dashboard', function () {
     $projects = Project::all();
     return view('dashboard', compact('projects'));
-})->middleware(['auth', 'verified'])->prefix("admin")->name('dashboard');
-
-
-
-/* parte che riguarda le modifiche del profilo */
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 
 

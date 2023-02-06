@@ -60,8 +60,8 @@ class ProjectController extends Controller
         ...$data,
         //a bd vado a salvare solamente il percorso 
         "cover_img" => $path ?? '',
-        // recuperiamo l'id dagli user cioé user_id é uguale all'utente loggato
-        "user_id" => Auth::id()
+      /*   // recuperiamo l'id dagli user cioé user_id é uguale all'utente loggato
+        "user_id" => Auth::id() */
         ]);
 
         return redirect()->route("admin.projects.show", $project->id);
