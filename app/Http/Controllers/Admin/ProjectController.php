@@ -7,6 +7,8 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Admin\Project;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use PhpParser\Node\Stmt\If_;
 
 class ProjectController extends Controller
@@ -32,7 +34,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        return view("admin.project.create");
+        return view("admin.projects.create");
     }
 
     /**
@@ -51,11 +53,11 @@ class ProjectController extends Controller
         ]);
 
 
-        if (key_exists(("cover_img"), $data)){
+         if (key_exists(("cover_img"), $data)){
 
             $path = Storage::put("project", $data["cover_img"]);
         }
-
+ 
        $project = Project::create([
         ...$data,
         //a bd vado a salvare solamente il percorso 
@@ -64,7 +66,7 @@ class ProjectController extends Controller
         "user_id" => Auth::id() */
         ]);
 
-        return redirect()->route("admin.projects.show", $project->id);
+        return redirect()->route("admin.projects.show", compact("project"));
 
        
     }
@@ -77,9 +79,9 @@ class ProjectController extends Controller
      * @param  \App\Models\Admin\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function show(Project $project)
+    public function show($id)
     {
-        $project = Project::findOrFail($project);
+        $project = Project::findOrFail($id);
         return view("admin.projects.show", compact("project"));
     }
 
@@ -89,7 +91,7 @@ class ProjectController extends Controller
      * @param  \App\Models\Admin\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function edit(Project $id)
+    public function edit($id)
     {
         $project = Project::findOrFail($id);
         return view("admin.projects.edit",compact("project"));
@@ -102,7 +104,7 @@ class ProjectController extends Controller
      * @param  \App\Models\Admin\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Project $id)
+    public function update(Request $request, $id)
     {
         $project = Project::findOrFail($id);
         $data = $request->validate([
@@ -114,7 +116,7 @@ class ProjectController extends Controller
 
 
 
-       /*  // carico il file SOLO se ne ricevo uno
+        // carico il file SOLO se ne ricevo uno
         if (key_exists("cover_img", $data)) {
             // carico il nuovo file
             // salvo in una variabile temporanea il percorso del nuovo file
@@ -124,10 +126,16 @@ class ProjectController extends Controller
             // cancelliamo dallo storage il vecchio file.
             // $post->cover_img // vecchio file
             Storage::delete($project->cover_img);
-        }     */
+        }
+        $project->update([
+            ...$data,
+            "user_id" =>Auth::id(),
+            "cover_img"=>$path ?? $project->cover_img,
+
+        ]);   
 
 
-        return redirect()->route("admin.projects.show",compact("project"));
+        return redirect()->route("admin.projects.show",$id);
         
     }
 
@@ -137,14 +145,15 @@ class ProjectController extends Controller
      * @param  \App\Models\Admin\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Project $id)
+    public function destroy($id)
     {
         $project = Project::findOrFail($id);
 
-        if ($project->cover_img) {
+      /*   if ($project->cover_img) {
             Storage::delete($project->cover_img);
-        }
+        } */
 
         $project->delete();
+        return redirect()->route("admin.projects.index");
     }
 }

@@ -7,7 +7,7 @@
   <div class="card margin-auto">
     {{-- Se cover_img esiste, mostra un tag img, altrimenti nulla --}}
     @if ($project->cover_img)
-      {{-- <img src="{{ $project->cover_img }}" alt="" class="card-img-top" style="width: 400px"> --}}
+
       <img src="{{ asset('/storage/' . $project->cover_img) }}" alt="" class="card-img-top" style="">
     @endif
 
