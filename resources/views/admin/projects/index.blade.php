@@ -22,7 +22,7 @@
                         <td>{{ $project->id }}</td>
                         <td>{{ $project->name }}</td>
                         <td>{{ $project->description }}</td>
-                        <td><img src="{{ asset('/storage/' . $project->cover_img) }}" alt="" style="object-fit:cover;">
+                        <td><img src="{{ asset('/storage/' . $project->cover_img) }}" alt="" style="width:90px; object-fit:cover">
                         </td>
                         <td>{{ $project->github_link }}</td>
 
